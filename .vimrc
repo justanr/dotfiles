@@ -7,8 +7,8 @@ filetype plugin indent on
 syntax on
 
 set nocompatible
-set t_Co=16
-
+set t_Co=256
+set noshowmode
 set incsearch
 set ignorecase
 set smartcase
@@ -19,22 +19,11 @@ set backspace=indent,eol,start
 set expandtab
 set number
 set cursorline
+set splitbelow
+set splitright
 
-au BufNewFile,BufRead *.py
-    \set tabstop=4
-    \set softtabstop=4
-    \set shiftwdith=4
-    \set expandtab
-    \set autoindent
-    \set fileformat=unix
-
-
-au BufNewFile,BufRead *.js, *.html, *.css,
-    \set tabstop=2
-    \set softtabstop=2
-    \set shiftwidth=2
-
-
+"Allow saving of files as sudo when I forgot to start vim using sudo.
+cmap w!! w !sudo tee > /dev/null %
 
 "python with venv support
 
@@ -53,13 +42,55 @@ let g:solarized_termcolors=256
 colorscheme solarized
 filetype plugin on
 
+
 let g:pymode_lint_checkers = ['pep8', 'pyflakes']
 let g:pymode_rope = 0
 let g:pymode_lint_ignore = "E0501,E0401"
-let g:pymode_options_max_line_length = 85
+let g:pymode_options_max_line_length = 99
 
 let NERDTreeIgnore=['\.pyc$', '\~$'] "ignored files for nerdtree
+let NERDTreeShowHidden=1
+nnoremap ntt :NERDTreeToggle<CR>
 
-set colorcolumn=85
+set colorcolumn=99
 
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+
+" unicode symbols
+let g:airline_left_sep = '»'
+let g:airline_left_sep = '▶'
+let g:airline_right_sep = '«'
+let g:airline_right_sep = '◀'
+let g:airline_symbols.crypt = '🔒'
+let g:airline_symbols.linenr = '␊'
+let g:airline_symbols.linenr = '␤'
+let g:airline_symbols.linenr = '¶'
+let g:airline_symbols.branch = '⎇'
+let g:airline_symbols.paste = 'ρ'
+let g:airline_symbols.paste = 'Þ'
+let g:airline_symbols.paste = '∥'
+let g:airline_symbols.notexists = '∄'
+let g:airline_symbols.whitespace = 'Ξ'
+
+noremap <silent> <Plug>AirlineTablineRefresh :set mod!<CR>
 nnoremap <F12> :!tox<CR>
+nnoremap <F5> :GundoToggle<CR>
+
+autocmd VimEnter * NERDTreeToggle
+let mapleader = "\<tab>"
+let g:javascript_plugin_jsdoc = 1
+let g:javascript_plugin_ngdoc = 1
+let g:javascript_plugin_flow = 1
+set foldmethod=syntax
+let g:javascript_conceal_function       = "ƒ"
+let g:javascript_conceal_null           = "ø"
+let g:javascript_conceal_this           = "@"
+let g:javascript_conceal_return         = "⇚"
+let g:javascript_conceal_undefined      = "¿"
+let g:javascript_conceal_NaN            = "ℕ"
+let g:javascript_conceal_prototype      = "¶"
+let g:javascript_conceal_static         = "•"
+let g:javascript_conceal_super          = "Ω"
+let g:javascript_conceal_arrow_function = "⇒"

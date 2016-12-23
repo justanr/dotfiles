@@ -1,21 +1,17 @@
 #!/bin/bash
-
-alias vi="vim"
 alias icanhazip="curl http://icanhazip.com"
-alias aptitude='sudo aptitude'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias less='less -CRXF'
-alias ls='ls -h'
+alias ls='ls -hG'
 alias grep='grep --color=always'
 alias df='df -hTk'
 alias du='du -hk'
 alias tmux="tmux -2"
 alias dualmonitors='xrandr --auto --output LVDS1 --left-of VGA1'
-alias lslcg="ls -l --color --group-directories-first"
 alias idea="$EDITOR ~/.ideas"
-alias peplint="pep8 --ignore=$PEP8_IGNORE -r --show-source"
 alias zen="python -c 'import this'";
+alias mkpy3env="mkvirtualenv -p $(which python3)";
 
 function notebook {
     HERE=$(pwd)
@@ -23,18 +19,6 @@ function notebook {
     jupyter notebook --no-browser
     cd $HERE
     }
-
-function lsl {
-    lslcg $1 | less
-}
-
-function lsgl {
-    lslcg $1 | grep $2 | less
-}
-
-function mcp {
-    ls -d */ | xargs -I {} cp -rv $1 {}
-}
 
 function bloggify {
     HERE=$(pwd)
@@ -51,12 +35,6 @@ function bloggify {
     cd $HERE
 }
 
-
-function old_bloggify {
-    ipython3 nbconvert --to html --template basic --stdout $1 | xclip -selection c
-}
-
 function _gi() { curl -s https://www.gitignore.io/api/$@ ;}
 
 function gi() { _gi $@  > $(pwd)/.gitignore; }
-
