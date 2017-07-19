@@ -8,7 +8,6 @@ alias grep='grep --color=always'
 alias df='df -hTk'
 alias du='du -hk'
 alias tmux="tmux -2"
-alias dualmonitors='xrandr --auto --output LVDS1 --left-of VGA1'
 alias idea="$EDITOR ~/.ideas"
 alias zen="python -c 'import this'";
 alias mkpy3env="mkvirtualenv -p $(which python3)";

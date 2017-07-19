@@ -22,9 +22,9 @@ if [ "$TERM" == "xterm" ]; then
 fi
 
 export PYTHONDONTWRITEBYTECODE=1
-export EDITOR=vim
-export BLOGSTAGEDIR='~/projects/blog'
-export BLOGDIR='~/projects/ballin-octo-bear'
+export EDITOR=nvim
+export BLOGSTAGEDIR=~/projects/blog
+export BLOGDIR=~/projects/ballin-octo-bear
 export BLOGENV='blog'
 
 VIRTUALENVWRAPPER_LOCATION=/usr/local/bin/virtualenvwrapper.sh
@@ -33,5 +33,9 @@ if [ -f $VIRTUALENVWRAPPER_LOCATION ]; then
 	export WORKON_HOME=~/.virtualenvs;
 	source $VIRTUALENVWRAPPER_LOCATION;
 fi
+
+if [ -f ~/.blog ]; then
+        source ~/.blog;
+fi;
 
 export PEP8_IGNORE="E731,W503"
