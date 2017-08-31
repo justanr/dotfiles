@@ -247,7 +247,7 @@ cscope.po.out
 
 ### venv ###
 # Linux
-bin/ 
+bin/
 include/
 
 # Window
@@ -293,3 +293,5 @@ pip-selfcheck.json
 .history
 
 # End of https://www.gitignore.io/api/angular,cmake,django,git,go,java,linux,monodevelop,python,redis,scala,tags,venv,vim,virtualenv,visualstudiocode
+#
+gmon.out
