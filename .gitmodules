@@ -1,0 +1,51 @@
+[submodule "vim-plugins/ctrlp.vim"]
+	path = vim-plugins/ctrlp.vim
+	url = git@github.com:kien/ctrlp.vim.git
+[submodule "vim-plugins/ale"]
+	path = vim-plugins/ale
+	url = git@github.com:w0rp/ale.git
+[submodule "vim-plugins/deoplete-jedi"]
+	path = vim-plugins/deoplete-jedi
+	url = git@github.com:zchee/deoplete-jedi.git
+[submodule "vim-plugins/deoplete.nvim"]
+	path = vim-plugins/deoplete.nvim
+	url = git@github.com:Shougo/deoplete.nvim.git
+[submodule "vim-plugins/editorconfig-vim"]
+	path = vim-plugins/editorconfig-vim
+	url = git@github.com:editorconfig/editorconfig-vim.git
+[submodule "vim-plugins/neoformat"]
+	path = vim-plugins/neoformat
+	url = git@github.com:sbdchd/neoformat.git
+[submodule "vim-plugins/nerdtree"]
+	path = vim-plugins/nerdtree
+	url = git@github.com:scrooloose/nerdtree.git
+[submodule "vim-plugins/nvim-typescript"]
+	path = vim-plugins/nvim-typescript
+	url = git@github.com:mhartington/nvim-typescript.git
+[submodule "vim-plugins/omnisharp-vim"]
+	path = vim-plugins/omnisharp-vim
+	url = git@github.com:OmniSharp/omnisharp-vim.git
+[submodule "vim-plugins/rust.vim"]
+	path = vim-plugins/rust.vim
+	url = git@github.com:rust-lang/rust.vim.git
+[submodule "vim-plugins/vim-airline"]
+	path = vim-plugins/vim-airline
+	url = git@github.com:vim-airline/vim-airline.git
+[submodule "vim-plugins/vim-airline-themes"]
+	path = vim-plugins/vim-airline-themes
+	url = git@github.com:vim-airline/vim-airline-themes.git
+[submodule "vim-plugins/vim-colorschemes"]
+	path = vim-plugins/vim-colorschemes
+	url = git@github.com:flazz/vim-colorschemes.git
+[submodule "vim-plugins/vim-csharp"]
+	path = vim-plugins/vim-csharp
+	url = git@github.com:OrangeT/vim-csharp.git
+[submodule "vim-plugins/vim-fugitive"]
+	path = vim-plugins/vim-fugitive
+	url = git@github.com:tpope/vim-fugitive.git
+[submodule "vim-plugins/vim-gutentags"]
+	path = vim-plugins/vim-gutentags
+	url = git@github.com:ludovicchabant/vim-gutentags.git
+[submodule "vim-plugins/yats.vim"]
+	path = vim-plugins/yats.vim
+	url = git@github.com:HerringtonDarkholme/yats.vim.git
