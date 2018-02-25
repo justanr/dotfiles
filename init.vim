@@ -50,6 +50,14 @@ let g:neoformat_typescript_prettier = {
                         \       '--parser', 'typescript'
                         \]
                         \ }
+let g:neoformat_rust_rustfmt = {
+            \ 'exe': 'rustup',
+            \ 'stdin': 1,
+            \ 'args': [
+            \   'run',
+            \   'rustfmt'
+            \   ]
+            \}
 let g:neoformat_enabled_python = ['yapf', 'isort']
 let g:neoformat_enabled_javascript = ['prettier']
 let g:neoformat_enabled_typescript = ['prettier']
@@ -75,6 +83,7 @@ endif
 augroup FiletypeGroup
         autocmd!
         au BufRead,BufNewFile *.jsx set filetype=javascript.jsx
+        au BufRead,BufNewFile *.tsx set filetype=typescript.tsx
 augroup END
 
 autocmd InsertLeave,CompleteDone * if pumvisible() == 0 || pclose || endif

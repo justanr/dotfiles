@@ -11,6 +11,7 @@ alias tmux="tmux -2"
 alias idea="$EDITOR ~/.ideas"
 alias zen="python -c 'import this'";
 alias mkpy3env="mkvirtualenv -p $(which python3)";
+alias tx="tmux attach-session || tmux"
 
 function notebook {
     HERE=$(pwd)
