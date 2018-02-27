@@ -1,0 +1,7 @@
+--smart-case
+
+--type-add=web:*.{html,css,less,sass,js,jsx,ts,tsx}
+
+--type-add=csbuild:*.{csproj,sln}
+
+--max-columns=150

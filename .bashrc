@@ -42,6 +42,7 @@ export PEP8_IGNORE="E731,W503"
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:$(go env GOPATH)/bin
 export PATH=$PATH:~/.npm/bin
+export RIPGREP_CONFIG_PATH=~/.ripgreprc
 #export LD_LIBRARY_PATH=$(rustc --print sysroot)/lib:$LD_LIBRARY_PATH
 #export RUST_SRC_PATH=$(rustc --print sysroot)/lib/rustlib/src/rust/src
 
