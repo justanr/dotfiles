@@ -4,7 +4,7 @@ let mapleader = ','
 let home = expand('~')
 tnoremap <Esc> <C-\><C-n>
 nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
-let g:python3_host_prog = home . '/.virtualenvs/neovim/bin/python3.6'
+let g:python3_host_prog = home . '/.virtualenvs/neovim/bin/python3'
 let g:python_host_prog = home . '/.virtualenvs/neovim2/bin/python'
 
 
