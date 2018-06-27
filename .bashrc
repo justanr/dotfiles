@@ -23,9 +23,9 @@ fi
 
 export PYTHONDONTWRITEBYTECODE=1
 export EDITOR=nvim
-export BLOGSTAGEDIR=~/projects/blog
-export BLOGDIR=~/projects/ballin-octo-bear
-export BLOGENV='blog'
+export BLOGSTAGEDIR=~/blogdir/builder
+export BLOGDIR=~/blogdir/content
+export BLOGENV='ballin-octo-bear'
 
 VIRTUALENVWRAPPER_LOCATION=/usr/local/bin/virtualenvwrapper.sh
 

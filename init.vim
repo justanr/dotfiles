@@ -3,8 +3,8 @@ set termguicolors
 let mapleader = ','
 let home = expand('~')
 tnoremap <Esc> <C-\><C-n>
-nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
-let g:python3_host_prog = home . '/.virtualenvs/neovim/bin/python3'
+let py3path = home . '/.virtualenvs/neovim3.6/bin/' 
+let g:python3_host_prog = py3path . 'python'
 let g:python_host_prog = home . '/.virtualenvs/neovim2/bin/python'
 
 
@@ -28,7 +28,7 @@ set splitbelow
 set splitright
 set foldmethod=syntax
 set hidden
-set colorcolumn=99
+set colorcolumn=79
 set autoread
 
 call plug#begin('~/.local/share/nvim/plugged')
@@ -49,6 +49,7 @@ Plug 'HerringtonDarkholme/yats.vim'
 Plug 'cespare/vim-toml'
 Plug 'rust-lang/rust.vim'
 Plug 'mhinz/vim-grepper'
+Plug 'tpope/vim-fugitive'
 call plug#end()
 
 colorscheme molokai
@@ -56,7 +57,7 @@ colorscheme molokai
 syntax on
 filetype plugin on
 
-let NERDTreeIgnore=['\.pyc$', '\~$', '\.git$', '\.tox$', '\.cache$', '\.sw[a-z]$', 'node_modules', 'gmon.out']
+let NERDTreeIgnore=['\.pyc$', '\~$', '\.git$', '\.tox$', '\.cache$', '\.sw[a-z]$', 'node_modules', 'gmon.out', '.mypy_cache', '.pytest_cache', 'tags']
 let NERDTreeShowHidden=1
 nnoremap ntt :NERDTreeToggle<CR>
 autocmd VimEnter * NERDTreeToggle
@@ -74,6 +75,8 @@ let g:ale_linters = {
 let g:ale_sign_column_always = 1
 
 let g:deoplete#enable_at_startup = 1
+let g:deoplete#max_list = 10
+let g:deoplete#enable_refresh_always = 1
 let g:deoplete#sources#rust#racer_binary = home . '/.cargo/bin/racer'
 let g:deoplete#sources#rust#src=home . '/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
 let g:deoplete#sources#rust#show_duplicates=1
@@ -83,15 +86,16 @@ let g:deoplete#source#rust#documentation_max_height=20
 let g:highlighter#auto_update = 2
 let g:highlighter#project_root_signs = ['.git']
 
-let g:neoformat_python_yapf = {
-                        \ 'exe': home . '/.virtualenvs/neovim/bin/yapf',
-                        \ 'args': ['--style', '~/.style.yapf'],
-                        \ }
 let g:neoformat_python_isort = {
-                        \ 'exe': home . '/.virtualenvs/neovim/bin/isort',
+                        \ 'exe': py3path . 'isort',
                         \ 'args': ['-', '--quiet'],
                         \ 'stdin': 1
                         \ }
+let g:neoformat_python_black = {
+            \ 'exe': py3path . 'black',
+            \ 'args': ['-', '2>/dev/null', '-l', '79'],
+            \ 'stdin': 1
+            \}
 let g:neoformat_javascript_prettier = {
                         \ 'exe': 'prettier',
                         \ 'stdin': 1,
@@ -112,7 +116,8 @@ let g:neoformat_typescript_prettier = {
                         \       '--parser', 'typescript'
                         \]
                         \ }
-let g:neoformat_enabled_python = ['yapf', 'isort']
+let g:neoformat_enabled_python = ['isort', 'black']
+
 let g:neoformat_enabled_javascript = ['prettier']
 let g:neoformat_enabled_typescript = ['prettier']
 let g:neoformat_enabled_rust = ['rustfmt']
@@ -125,9 +130,13 @@ noremap <leader>y :Neoformat<CR>
 vnoremap <leader>y :Neoformat 'full'<CR>
 
 if executable('rg')
-        let g:ctrlp_user_command = 'rg %s --files --color=never --smartcase --glob "" --hidden'
+        let g:ctrlp_user_command = 'rg %s --files --color=never --smart-case --glob "" --hidden'
         let g:ctrlp_use_caching = 0
         nnoremap \ :GrepperRg<SPACE>
+        nnoremap K :Grepper -tool rg -cword<CR><CR>
+else 
+    nnoremap \ :Grepper -tool grep<SPACE>
+    nnoremap K :Grepper -cword -tool grep<CR><CR>
 endif
 
 augroup FiletypeGroup
