@@ -35,6 +35,11 @@ function bloggify {
     cd $HERE
 }
 
-function _gi() { curl -s https://www.gitignore.io/api/$@ ;}
+function _gi() {
+    PROJECTTYPES=$(printf '%s,' "$@" | sed 's/,*$//g')
+    curl -sL "https://www.toptal.com/developers/gitignore/api/${PROJECTTYPES}";
+}
 
-function gi() { _gi $@  > $(pwd)/.gitignore; }
+function gi {
+    _gi $@ >> $(pwd)/.gitignore
+}
