@@ -3,11 +3,13 @@ set termguicolors
 let mapleader = ','
 let home = expand('~')
 tnoremap <Esc> <C-\><C-n>
-let py3path = home . '/.virtualenvs/neovim3.6/bin/' 
-let g:python3_host_prog = py3path . 'python'
-let g:python_host_prog = home . '/.virtualenvs/neovim2/bin/python'
+let py3path = home . '/.virtualenvs/neovim3.8/bin/' 
+let py3interp = py3path . 'python'
+let g:python3_host_prog = py3interp 
+let g:python_host_prog = home . '/.virtualenvs/neovim2.7/bin/python'
 
 
+set t_Co=256
 set nocompatible
 set noshowmode
 set incsearch
@@ -39,8 +41,6 @@ Plug 'ludovicchabant/vim-gutentags'
 Plug 'kien/ctrlp.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'flazz/vim-colorschemes'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
 Plug 'Shougo/deoplete.nvim'
 Plug 'racer-rust/vim-racer'
 Plug 'zchee/deoplete-jedi'
@@ -82,6 +82,7 @@ let g:deoplete#sources#rust#src=home . '/.rustup/toolchains/nightly-x86_64-unkno
 let g:deoplete#sources#rust#show_duplicates=1
 let g:deoplete#sources#rust#disable_keymap=1
 let g:deoplete#source#rust#documentation_max_height=20
+let g:deoplete#sources#jedi#python_path=py3interp
 
 let g:highlighter#auto_update = 2
 let g:highlighter#project_root_signs = ['.git']
@@ -93,7 +94,7 @@ let g:neoformat_python_isort = {
                         \ }
 let g:neoformat_python_black = {
             \ 'exe': py3path . 'black',
-            \ 'args': ['-', '2>/dev/null', '-l', '79'],
+            \ 'args': ['-', '2>/dev/null'],
             \ 'stdin': 1
             \}
 let g:neoformat_javascript_prettier = {
