@@ -3,10 +3,9 @@ set termguicolors
 let mapleader = ','
 let home = expand('~')
 tnoremap <Esc> <C-\><C-n>
-let py3path = home . '/.virtualenvs/neovim3.8/bin/' 
+let py3path = home . '/.venvs/neovim/bin/' 
 let py3interp = py3path . 'python'
 let g:python3_host_prog = py3interp 
-let g:python_host_prog = home . '/.virtualenvs/neovim2.7/bin/python'
 
 
 set t_Co=256
