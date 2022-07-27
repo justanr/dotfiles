@@ -23,9 +23,6 @@ fi
 
 export PYTHONDONTWRITEBYTECODE=1
 export EDITOR=nvim
-export BLOGSTAGEDIR=~/blogdir/builder
-export BLOGDIR=~/blogdir/content
-export BLOGENV='ballin-octo-bear'
 
 VIRTUALENVWRAPPER_LOCATION=/usr/local/bin/virtualenvwrapper.sh
 
@@ -34,18 +31,10 @@ if [ -f $VIRTUALENVWRAPPER_LOCATION ]; then
 	source $VIRTUALENVWRAPPER_LOCATION;
 fi
 
-if [ -f ~/.blog ]; then
-        source ~/.blog;
-fi;
-
-export PEP8_IGNORE="E731,W503"
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:$(go env GOPATH)/bin
 export PATH=$PATH:~/.npm/bin
 export RIPGREP_CONFIG_PATH=~/.ripgreprc
-#export LD_LIBRARY_PATH=$(rustc --print sysroot)/lib:$LD_LIBRARY_PATH
-#export RUST_SRC_PATH=$(rustc --print sysroot)/lib/rustlib/src/rust/src
-
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
