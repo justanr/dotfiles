@@ -48,15 +48,12 @@ function _fancy_prompt {
     PROMPT=$PROMPT"$RED)"
   fi
 
-#  # docker-machine
-#  local ACTIVE_DM=$(docker-machine active 2> /dev/null)
-#  if [ -n "$ACTIVE_DM" ] # is there an active docker-machine
-#  then
-#          # active docker machine
-#          PROMPT=$PROMPT" $PURPLE(dm:"
-#          PROMPT=$PROMPT"$(docker-machine active)"
-#          PROMPT=$PROMPT")"
-#  fi;
+  if command -v kubectl > /dev/null 2>&1 /; then
+    kubecontext=$(kubectl config current-context 2> /dev/null)
+    if [ $? == 0 ] && [ "${kubecontext}" != "" ]; then
+       PROMPT="${PROMPT}${PURPLE}(${kubecontext})"
+    fi
+  fi
 
   #virtualenv
   if [[ -n "$VIRTUAL_ENV" ]]

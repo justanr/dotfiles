@@ -34,7 +34,7 @@ set autoread
 
 call plug#begin('~/.local/share/nvim/plugged')
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-Plug 'w0rp/ale'
+Plug 'dense-analysis/ale'
 Plug 'sbdchd/neoformat'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'kien/ctrlp.vim'
@@ -49,6 +49,8 @@ Plug 'cespare/vim-toml'
 Plug 'rust-lang/rust.vim'
 Plug 'mhinz/vim-grepper'
 Plug 'tpope/vim-fugitive'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'puremourning/vimspector'
 call plug#end()
 
 colorscheme molokai
@@ -125,6 +127,9 @@ let g:neoformat_enabled_html = ['htmlbeautify']
 let g:neoformat_enabled_go = ['gofmt']
 let g:neoformat_run_all_formatters = 1
 let g:neoformat_verbose = 0
+let g:rustfmt_autosave = 1
+let g:rustfmt_emit_files = 1
+let g:rustfmt_fail_silently = 0
 
 noremap <leader>y :Neoformat<CR>
 vnoremap <leader>y :Neoformat 'full'<CR>
@@ -146,3 +151,36 @@ augroup FiletypeGroup
 augroup END
 
 autocmd InsertLeave,CompleteDone * if pumvisible() == 0 || pclose || endif
+
+inoremap <silent><expr> <TAB>
+    \ pumvisible() ? "\<C-n>" :
+    \ <SID>check_back_space() ? "\<TAB>" :
+    \ coc#refresh()
+
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1] =~# '\s'
+endfunction
+
+inoremap <silent><expr> <c-space> coc#refresh()
+
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+packadd termdebug
+au BufNewFile,BufRead *.rs let termdebug="rust-dgb"
+
+nmap <Leader>di <Plug>VimspectorBalloonEval
+xmap <Leader>di <Plug>VimspectorBalloonEval
+let g:vimspector_base_dir=expand('$HOME/.config/nvim/vimspector')
+let g:vimspector_enable_mappings='HUMAN'
+let g:vimspector_install_gadgets=['debugpy', 'CodeLLDB', 'vscode-cpptools']
+nmap <leader>dd :call vimspector#Launch()<CR>
+nmap <leader>dx :VimspectorReset<CR>
+nmap <leader>de :VimspectorEval
+nmap <leader>dw :VimspectorWatch
+nmap <leader>do :VimspectorShowOutput
