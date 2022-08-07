@@ -49,9 +49,7 @@ Plug 'ludovicchabant/vim-gutentags'
 Plug 'kien/ctrlp.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'flazz/vim-colorschemes'
-Plug 'Shougo/deoplete.nvim'
 Plug 'racer-rust/vim-racer'
-Plug 'zchee/deoplete-jedi'
 Plug 'mhartington/nvim-typescript'
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'cespare/vim-toml'
@@ -90,16 +88,6 @@ let g:ale_linters = {
                         \'go': ['gofmt', 'staticcheck', 'golint', 'gobuild']
                         \}
 let g:ale_sign_column_always = 1
-
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#max_list = 10
-let g:deoplete#enable_refresh_always = 1
-let g:deoplete#sources#rust#racer_binary = home . '/.cargo/bin/racer'
-let g:deoplete#sources#rust#src=home . '/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
-let g:deoplete#sources#rust#show_duplicates=1
-let g:deoplete#sources#rust#disable_keymap=1
-let g:deoplete#source#rust#documentation_max_height=20
-let g:deoplete#sources#jedi#python_path=py3interp
 
 let g:highlighter#auto_update = 2
 let g:highlighter#project_root_signs = ['.git']
