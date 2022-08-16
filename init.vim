@@ -1,82 +1,218 @@
-set guicursor=
-set termguicolors
+"Leader {{{
 let mapleader = ','
+"}}}
+
+"Python interpreter {{{
 let home = expand('~')
-tnoremap <Esc> <C-\><C-n>
 let py3path = home . '/.venvs/neovim/bin/'
 let py3interp = py3path . 'python'
 let g:python3_host_prog = py3interp
+"}}}
 
-
-set t_Co=256
+" Settings {{{
+set autoindent
+set autoread
+set backspace=indent,eol,start
+set cmdheight=2
+set colorcolumn=79
+set cursorline
+set dictionary+=/usr/share/dict/words
+set dictionary?
+set encoding=utf-8
+set expandtab
+set foldlevel=99
+set foldmethod=syntax
+set guicursor=
+set hidden
+set hlsearch
+set ignorecase
+set inccommand=nosplit
+set incsearch
+set laststatus=2
 set nocompatible
 set noshowmode
-set incsearch
-set ignorecase
-set smartcase
-set scrolloff=2
-set wildmode=longest,list
-set autoindent
-set backspace=indent,eol,start
-set hlsearch
-set expandtab
-set smarttab
-set shiftwidth=4
-set tabstop=4
 set number
-set cursorline
+set path+=**
+set scrolloff=2
+set shiftwidth=4
+set shortmess+=c
+set showcmd
+set signcolumn=yes
+set smartcase
+set smarttab
 set splitbelow
 set splitright
-set foldmethod=syntax
-set hidden
-set colorcolumn=79
-set autoread
-set dictionary?
-set dictionary+=/usr/share/dict/words
-set inccommand=nosplit
+set t_Co=256
+set tabstop=4
+set termguicolors
+set updatetime=300
+set wildmenu
+set wildmode=longest,list
+syntax on
+filetype plugin on
+"}}}
 
+" Terminal {{{
+tnoremap <Esc> <C-\><C-n>
+" }}}
+
+"Relative numbers {{{
 augroup numbertoggle
     autocmd!
     autocmd BufEnter,FocusGained,InsertLeave,WinEnter * if &nu && mode() != "i" | set rnu   | endif
     autocmd BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu                  | set nornu | endif
 augroup END
+"}}}
 
+" Plugins {{{
 call plug#begin('~/.local/share/nvim/plugged')
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-Plug 'dense-analysis/ale'
-Plug 'sbdchd/neoformat'
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'kien/ctrlp.vim'
-Plug 'editorconfig/editorconfig-vim'
-Plug 'flazz/vim-colorschemes'
-Plug 'racer-rust/vim-racer'
-Plug 'mhartington/nvim-typescript'
-Plug 'HerringtonDarkholme/yats.vim'
 Plug 'cespare/vim-toml'
-Plug 'rust-lang/rust.vim'
-Plug 'mhinz/vim-grepper'
-Plug 'tpope/vim-fugitive'
-Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': 'yarn install --frozen-lockfile'}
-Plug 'puremourning/vimspector'
-Plug 'fatih/vim-go'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'dense-analysis/ale'
+Plug 'editorconfig/editorconfig-vim'
 Plug 'ekalinin/Dockerfile.vim'
-Plug 'yssl/QFEnter'
+Plug 'fatih/vim-go'
+Plug 'flazz/vim-colorschemes'
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'mhartington/nvim-typescript'
+Plug 'mhinz/vim-grepper'
+Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': 'yarn install --frozen-lockfile'}
+Plug 'preservim/tagbar'
+Plug 'preservim/vim-markdown'
+Plug 'puremourning/vimspector'
+Plug 'rust-lang/rust.vim'
+Plug 'sbdchd/neoformat'
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'Shougo/echodoc'
+Plug 'tpope/vim-fugitive'
 Plug 'Yggdroot/indentLine'
+Plug 'yssl/QFEnter'
 call plug#end()
+" }}}
 
-nnoremap <silent> <leader><space> :noh<CR>
-
+"Colorscheme {{{
 colorscheme molokai
+"}}}
 
-syntax on
-filetype plugin on
+" Local functions {{{
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1] =~# '\s'
+endfunction
 
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1] =~# '\s'
+endfunction
+
+
+function! s:__qfnext()
+    try
+        cnext
+    catch
+        crewind
+    endtry
+endfunction
+
+function! s:__qfprev()
+    try
+        cprev
+    catch
+        clast
+    endtry
+endfunction
+" }}}
+
+" Keymaps {{{
+" Insert {{{
+imap <Left> <Nop>
+imap <Right> <Nop>
+inoremap <C-h> <Left>
+inoremap <C-j> <Down>
+inoremap <C-k> <Up>
+inoremap <C-l> <Right>
+inoremap <F5> <C-R>=strftime("%Y-%m-%d %H:%M:%S")<CR>
+inoremap <silent><expr> <C-e> coc#pum#visible() ? coc#pum#cancel() : "\<C-e>"
+inoremap <silent><expr> <C-n> coc#pum#visible() ? coc#pum#next(1) : "\<C-n>"
+inoremap <silent><expr> <C-p> coc#pum#visible() ? coc#pum#prev(1) : "\<C-p>"
+inoremap <silent><expr> <c-space> coc#refresh()
+inoremap <silent><expr> <C-y> coc#pum#visible() ? coc#pum#confirm() : "\<C-y>"
+inoremap <silent><expr> <cr> coc#pum#visible() ? coc#_select_confirm() : "\<CR>"
+inoremap <silent><expr> <down> coc#pum#visible() ? coc#pum#next(0) : "\<Nop>"
+inoremap <silent><expr> <PageDown> coc#pum#visible() ? coc#pum#scroll(1) : "\<PageDown>"
+inoremap <silent><expr> <PageUp> coc#pum#visible() ? coc#pum#scroll(0) : "\<PageUp>"
+inoremap <silent><expr> <TAB> coc#pum#visible() ? coc#_select_confirm() : "\<TAB>"
+inoremap <silent><expr> <up> coc#pum#visible() ? coc#pum#prev(0) : "\<Nop>"
+"}}}
+" Normal {{{
+nmap <leader>T :TagbarToggle<CR>
+nnoremap <silent> <C-n> :call <SID>__qfnext()<CR>
+nnoremap <silent> <C-p> :call <SID>__qfprev()<CR>
+nmap <Leader>di <Plug>VimspectorBalloonEval
+nmap <leader>dd :call vimspector#Launch()<CR>
+nmap <leader>de :VimspectorEval
+nmap <leader>do :VimspectorShowOutput
+nmap <leader>dw :VimspectorWatch
+nmap <leader>dx :VimspectorReset<CR>
+nmap <leader>f <Plug>(coc-format-selected)
+nmap <leader>rn <Plug>(coc-rename)
+nmap <silent> <leader>gd :call CocAction('jumpDefinition', 'edit')<CR>
+nmap <silent> <leader>gi :call CocAction('jumpImplementation', 'edit')<CR>
+nmap <silent> <leader>gr :call CocAction('jumpReferences', 'edit')<CR>
+nmap <silent> <leader>gy :call CocAction('jumpTypeDefinition', 'edit')<CR>
+nmap <silent> [c <Plug>(coc-diagnostic-prev>
+nmap <silent> ]c <Plug>(coc-diagnostic-next>
+nmap <silent> gd :call CocAction('jumpDefinition', 'vsplit')<CR>
+nmap <silent> gi :call CocAction('jumpImplementation', 'vsplit')<CR>
+nmap <silent> gr :call CocAction('jumpReferences', 'vsplit')<CR>
+nmap <silent> gy :call CocAction('jumpTypeDefinition', 'vsplit')<CR>
+nnoremap <space> za
+nnoremap <C-j> gT
+nnoremap <C-k> gt
+nnoremap <C-t> :tabnew<CR>
+nnoremap <Down> <Nop>
+nnoremap <Left> <Nop>
+nnoremap <Right> <Nop>
+nnoremap <Up> <Nop>
+nnoremap <leader>w gqip
+nnoremap <silent> <leader><space> :noh<CR>
+nnoremap <silent> <space>a :<C-u>CocList diagnostics<CR>
+nnoremap <silent> <space>c :<C-u>CocList commands<CR>
+nnoremap <silent> <space>e :<C-u>CocList extensions<CR>
+nnoremap <silent> <space>j :<C-u>CocNext<CR>
+nnoremap <silent> <space>k :<C-u>CocPrev<CR>
+nnoremap <silent> <space>o :<C-u>CocList outline<CR>
+nnoremap <silent> <space>p :<C-u>CocListResume<CR>
+nnoremap <silent> <space>s :<C-u>CocList -I symbols<CR>
+nnoremap <silent> U :call <SID>show_documentations()<CR>
+nnoremap H ^
+nnoremap J }
+nnoremap K {
+nnoremap L $
+nnoremap gj j
+nnoremap gk k
+nnoremap j gj
+nnoremap k gk
+nnoremap ntt :NERDTreeToggle<CR>
+noremap <leader>y :Neoformat<CR>
+"}}}
+"Visual {{{
+vnoremap <leader>y :Neoformat 'full'<CR>
+xmap <Leader>di <Plug>VimspectorBalloonEval
+vmap <leader>f <Plug>(coc-format-selected)
+    \ pumvisible() ? "\<C-n>" :
+    \ <SID>check_back_space() ? "\<TAB>" :
+    \ coc#refresh()
+"}}}
+"}}}
+
+" NERDTree {{{
 let NERDTreeIgnore=['\.pyc$', '\~$', '\.git$', '\.tox$', '\.cache$', '\.sw[a-z]$', 'node_modules', 'gmon.out', '.mypy_cache', '.pytest_cache', 'tags']
 let NERDTreeShowHidden=1
-nnoremap ntt :NERDTreeToggle<CR>
 autocmd VimEnter * NERDTreeToggle
+" }}}
 
-
+"ALE {{{
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_format = '[%severity%] [%linter%] %s'
 let g:ale_echo_msg_warning_str = 'W'
@@ -88,10 +224,9 @@ let g:ale_linters = {
                         \'go': ['gofmt', 'staticcheck', 'golint', 'gobuild']
                         \}
 let g:ale_sign_column_always = 1
+"}}}
 
-let g:highlighter#auto_update = 2
-let g:highlighter#project_root_signs = ['.git']
-
+"neoformat {{{
 let g:neoformat_python_isort = {
                         \ 'exe': py3path . 'isort',
                         \ 'args': ['-', '--quiet'],
@@ -134,9 +269,9 @@ let g:neoformat_verbose = 0
 let g:rustfmt_autosave = 1
 let g:rustfmt_emit_files = 1
 let g:rustfmt_fail_silently = 0
+"}}}
 
-noremap <leader>y :Neoformat<CR>
-vnoremap <leader>y :Neoformat 'full'<CR>
+" CtrlP/Vimgrepper Ripgrep {{{
 
 if executable('rg')
         let g:ctrlp_user_command = 'rg %s --files --color=never --smart-case --glob ""'
@@ -147,109 +282,61 @@ else
     nnoremap \ :Grepper -tool grep<SPACE>
     nnoremap K :Grepper -cword -tool grep<CR><CR>
 endif
+"}}}
 
-augroup FiletypeGroup
+" Autocommands {{{
+if !exists("autocommands_loaded")
+    let autocommands_loaded = 1
+    augroup FiletypeGroup
         autocmd!
         au BufRead,BufNewFile *.jsx set filetype=javascript.jsx
         au BufRead,BufNewFile *.tsx set filetype=typescript.tsx
-augroup END
+    augroup END
 
-autocmd InsertLeave,CompleteDone * if pumvisible() == 0 || pclose || endif
+    augroup Go
+        autocmd!
+        au FileType go nmap <leader>r <Plug>(go-run)
+        au FileType go nmap <leader>b <Plug>(go-build)
+        au FileType go nmap <leader>t :GoTest!<CR>
+        au FileType go nmap <leader>c <Plug>(go-coverage-toggle)
+        au FileType go nmap <leader>e <Plug>(go-rename)
+        au FileType go iab iferr if err != nil {}<Up>
+    augroup END
 
-inoremap <silent><expr> <TAB>
-    \ pumvisible() ? "\<C-n>" :
-    \ <SID>check_back_space() ? "\<TAB>" :
-    \ coc#refresh()
 
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+    augroup Markdown
+        autocmd!
+        au FileType markdown unmap <leader>T
+        au FileType markdown nmap <leader>T :Toc<CR>
+    augroup END
 
-function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1] =~# '\s'
-endfunction
+    au TabLeave * let g:lasttab = tabpagenr()
+    au InsertLeave,CompleteDone * if pumvisible() == 0 || pclose || endif
+endif
+"}}}
 
-inoremap <silent><expr> <c-space> coc#refresh()
-nnoremap <leader>w gqip
 
-packadd termdebug
-au BufNewFile,BufRead *.rs let termdebug="rust-dgb"
-
-nmap <Leader>di <Plug>VimspectorBalloonEval
-xmap <Leader>di <Plug>VimspectorBalloonEval
+" Vimspector {{{
 let g:vimspector_base_dir=expand('$HOME/.config/nvim/vimspector')
 let g:vimspector_enable_mappings='HUMAN'
-let g:vimspector_install_gadgets=['debugpy', 'CodeLLDB', 'vscode-cpptools']
-nmap <leader>dd :call vimspector#Launch()<CR>
-nmap <leader>dx :VimspectorReset<CR>
-nmap <leader>de :VimspectorEval
-nmap <leader>dw :VimspectorWatch
-nmap <leader>do :VimspectorShowOutput
+let g:vimspector_install_gadgets=['debugpy', 'CodeLLDB', 'vscode-cpptools', 'vscode-go']
+"""
 
-
-" coc settings
-set hidden
-set cmdheight=2
-set updatetime=300
-set shortmess+=c
-set signcolumn=yes
-
-inoremap <silent><expr> <TAB>
-            \ pumvisible() ? "\<C-n>" :
-            \ <SID>check_back_space() ? "\<TAB>" :
-            \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1] =~# '\s'
-endfunction
-
-inoremap <silent><expr> <c-space> coc#refesh()
-
-nmap <silent> [c <Plug>(coc-diagnostic-prev>
-nmap <silent> ]c <Plug>(coc-diagnostic-next>
-
-
-nmap <silent> gd :call CocAction('jumpDefinition', 'vsplit')<CR>
-nmap <silent> gy :call CocAction('jumpTypeDefinition', 'vsplit')<CR>
-nmap <silent> gi :call CocAction('jumpImplementation', 'vsplit')<CR>
-nmap <silent> gr :call CocAction('jumpReferences', 'vsplit')<CR>
-nmap <silent> gd :call CocAction('jumpDefinition', 'edit')<CR>
-nmap <silent> gy :call CocAction('jumpTypeDefinition', 'edit')<CR>
-nmap <silent> gi :call CocAction('jumpImplementation', 'edit')<CR>
-nmap <silent> gr :call CocAction('jumpReferences', 'edit')<CR>
-
-nnoremap <silent> U :call <SID>show_documentations()<CR>
-nmap <leader>rn <Plug>(coc-rename)
-vmap <leader>f <Plug>(coc-format-selected)
-nmap <leader>f <Plug>(coc-format-selected)
-nnoremap <silent> <space>a :<C-u>CocList diagnostics<CR>
-nnoremap <silent> <space>e :<C-u>CocList extensions<CR>
-nnoremap <silent> <space>c :<C-u>CocList commands<CR>
-nnoremap <silent> <space>o :<C-u>CocList outline<CR>
-nnoremap <silent> <space>s :<C-u>CocList -I symbols<CR>
-nnoremap <silent> <space>j :<C-u>CocNext<CR>
-nnoremap <silent> <space>k :<C-u>CocPrev<CR>
-nnoremap <silent> <space>p :<C-u>CocListResume<CR>
-
+"Vim Go {{{
 let g:go_def_mapping_enabled = 0
+"}}}
 
-au FileType go nmap <leader>r <Plug>(go-run)
-au FileType go nmap <leader>b <Plug>(go-build)
-au FileType go nmap <leader>t <Plug>(go-test)
-au FileType go nmap <leader>c <Plug>(go-coverage-toggle)
-au FileType go nmap <leader>e <Plug>(go-rename)
-
-inoremap <F5> <C-R>=strftime("%Y-%m-%d %H:%M:%S")<CR>
-nnoremap j gj
-nnoremap gj j
-nnoremap k gk
-nnoremap gk k
-
+"Quickfix {{{
 let g:qfenter_keymap = {}
-let g:qfenter_keymap.vopen = ['<CR>', '<C-v>']
-let g:qfenter_keymap.hopen = ['<C-CR>', '<C-s>', '<C-x>']
+let g:qfenter_keymap.vopen = ['<C-v>']
+let g:qfenter_keymap.hopen = ['<C-s>', '<C-x>']
 let g:qfenter_keymap.topen = ['<C-t>']
+"}}}
+"Indents {{{
 let g:indentLine_char_list = ['|', '¦', '┆', '┊']
 let g:indentLine_setConceal = 0
+"}}}
 
+"Docs {{{
+let g:echodoc#enable_at_startup = 1
+"}}}
