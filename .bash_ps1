@@ -51,7 +51,7 @@ function _fancy_prompt {
   if command -v kubectl > /dev/null 2>&1 /; then
     kubecontext=$(kubectl config current-context 2> /dev/null)
     if [ $? == 0 ] && [ "${kubecontext}" != "" ]; then
-       PROMPT="${PROMPT}${PURPLE}(${kubecontext})"
+       PROMPT="${PROMPT} ${PURPLE}(${kubecontext})"
     fi
   fi
 

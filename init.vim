@@ -56,14 +56,6 @@ filetype plugin on
 tnoremap <Esc> <C-\><C-n>
 " }}}
 
-"Relative numbers {{{
-augroup numbertoggle
-    autocmd!
-    autocmd BufEnter,FocusGained,InsertLeave,WinEnter * if &nu && mode() != "i" | set rnu   | endif
-    autocmd BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu                  | set nornu | endif
-augroup END
-"}}}
-
 " Plugins {{{
 call plug#begin('~/.local/share/nvim/plugged')
 Plug 'cespare/vim-toml'
@@ -95,9 +87,12 @@ colorscheme molokai
 "}}}
 
 " Local functions {{{
-function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1] =~# '\s'
+function! ToggleQuickFix()
+    if empty(filter(getwininfo(), 'v:val.quickfix'))
+        copen
+    else
+        cclose
+    endif
 endfunction
 
 function! s:check_back_space() abort
@@ -105,21 +100,9 @@ function! s:check_back_space() abort
     return !col || getline('.')[col - 1] =~# '\s'
 endfunction
 
-
-function! s:__qfnext()
-    try
-        cnext
-    catch
-        crewind
-    endtry
-endfunction
-
-function! s:__qfprev()
-    try
-        cprev
-    catch
-        clast
-    endtry
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1] =~# '\s'
 endfunction
 " }}}
 
@@ -127,9 +110,11 @@ endfunction
 " Insert {{{
 imap <Left> <Nop>
 imap <Right> <Nop>
+imap <Up> <Nop>
+imap <Down> <Nop>
 inoremap <C-h> <Left>
-inoremap <C-j> <Down>
-inoremap <C-k> <Up>
+inoremap <C-j> <C-o>gj
+inoremap <C-k> <C-o>gk
 inoremap <C-l> <Right>
 inoremap <F5> <C-R>=strftime("%Y-%m-%d %H:%M:%S")<CR>
 inoremap <silent><expr> <C-e> coc#pum#visible() ? coc#pum#cancel() : "\<C-e>"
@@ -138,16 +123,13 @@ inoremap <silent><expr> <C-p> coc#pum#visible() ? coc#pum#prev(1) : "\<C-p>"
 inoremap <silent><expr> <c-space> coc#refresh()
 inoremap <silent><expr> <C-y> coc#pum#visible() ? coc#pum#confirm() : "\<C-y>"
 inoremap <silent><expr> <cr> coc#pum#visible() ? coc#_select_confirm() : "\<CR>"
-inoremap <silent><expr> <down> coc#pum#visible() ? coc#pum#next(0) : "\<Nop>"
-inoremap <silent><expr> <PageDown> coc#pum#visible() ? coc#pum#scroll(1) : "\<PageDown>"
-inoremap <silent><expr> <PageUp> coc#pum#visible() ? coc#pum#scroll(0) : "\<PageUp>"
+inoremap <silent><expr> <C-N> coc#pum#visible() ? coc#pum#scroll(1) : "\<C-N>"
+inoremap <silent><expr> <C-P> coc#pum#visible() ? coc#pum#scroll(0) : "\<C-P>"
 inoremap <silent><expr> <TAB> coc#pum#visible() ? coc#_select_confirm() : "\<TAB>"
-inoremap <silent><expr> <up> coc#pum#visible() ? coc#pum#prev(0) : "\<Nop>"
 "}}}
 " Normal {{{
+nnoremap <leader>q :call ToggleQuickFix()<CR><C-W>p
 nmap <leader>T :TagbarToggle<CR>
-nnoremap <silent> <C-n> :call <SID>__qfnext()<CR>
-nnoremap <silent> <C-p> :call <SID>__qfprev()<CR>
 nmap <Leader>di <Plug>VimspectorBalloonEval
 nmap <leader>dd :call vimspector#Launch()<CR>
 nmap <leader>de :VimspectorEval
@@ -166,6 +148,8 @@ nmap <silent> gd :call CocAction('jumpDefinition', 'vsplit')<CR>
 nmap <silent> gi :call CocAction('jumpImplementation', 'vsplit')<CR>
 nmap <silent> gr :call CocAction('jumpReferences', 'vsplit')<CR>
 nmap <silent> gy :call CocAction('jumpTypeDefinition', 'vsplit')<CR>
+" I'm sure ZZ is useful to someone but not me
+nnoremap ZZ <Nop>
 nnoremap <space> za
 nnoremap <C-j> gT
 nnoremap <C-k> gt
@@ -272,7 +256,8 @@ let g:rustfmt_fail_silently = 0
 "}}}
 
 " CtrlP/Vimgrepper Ripgrep {{{
-
+let g:ctrlp_extensions = ['line', 'buffertag', 'tag', 'dir']
+let g:ctrlp_cmd = 'CtrlPLastMode'
 if executable('rg')
         let g:ctrlp_user_command = 'rg %s --files --color=never --smart-case --glob ""'
         let g:ctrlp_use_caching = 0
@@ -287,10 +272,21 @@ endif
 " Autocommands {{{
 if !exists("autocommands_loaded")
     let autocommands_loaded = 1
+    augroup Fugitive
+        au FileType fugitive wincmd J
+        au FileType fugitive resize 10
+    augroup END
+
     augroup FiletypeGroup
         autocmd!
         au BufRead,BufNewFile *.jsx set filetype=javascript.jsx
         au BufRead,BufNewFile *.tsx set filetype=typescript.tsx
+    augroup END
+
+    augroup numbertoggle
+        autocmd!
+        autocmd BufEnter,FocusGained,InsertLeave,WinEnter * if &nu && mode() != "i" | set rnu   | endif
+        autocmd BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu                  | set nornu | endif
     augroup END
 
     augroup Go
@@ -301,6 +297,9 @@ if !exists("autocommands_loaded")
         au FileType go nmap <leader>c <Plug>(go-coverage-toggle)
         au FileType go nmap <leader>e <Plug>(go-rename)
         au FileType go iab iferr if err != nil {}<Up>
+        au FileType go nmap <Leader>a <Plug>(go-alternate-vertical)
+        au FileType go nmap <Leader>i :GoImport!
+        au FileType go nmap <Leader>I :GoImportAs!
     augroup END
 
 
@@ -308,6 +307,12 @@ if !exists("autocommands_loaded")
         autocmd!
         au FileType markdown unmap <leader>T
         au FileType markdown nmap <leader>T :Toc<CR>
+    augroup END
+
+    augroup Quickfix
+        autocmd!
+        au FileType qf wincmd J
+        au FileType qf resize 5
     augroup END
 
     au TabLeave * let g:lasttab = tabpagenr()
