@@ -79,6 +79,8 @@ Plug 'Shougo/echodoc'
 Plug 'tpope/vim-fugitive'
 Plug 'Yggdroot/indentLine'
 Plug 'yssl/QFEnter'
+Plug 'vim-python/python-syntax'
+Plug 'arzg/vim-sh'
 call plug#end()
 " }}}
 
@@ -123,8 +125,6 @@ inoremap <silent><expr> <C-p> coc#pum#visible() ? coc#pum#prev(1) : "\<C-p>"
 inoremap <silent><expr> <c-space> coc#refresh()
 inoremap <silent><expr> <C-y> coc#pum#visible() ? coc#pum#confirm() : "\<C-y>"
 inoremap <silent><expr> <cr> coc#pum#visible() ? coc#_select_confirm() : "\<CR>"
-inoremap <silent><expr> <C-N> coc#pum#visible() ? coc#pum#scroll(1) : "\<C-N>"
-inoremap <silent><expr> <C-P> coc#pum#visible() ? coc#pum#scroll(0) : "\<C-P>"
 inoremap <silent><expr> <TAB> coc#pum#visible() ? coc#_select_confirm() : "\<TAB>"
 "}}}
 " Normal {{{
@@ -158,6 +158,9 @@ nnoremap <Down> <Nop>
 nnoremap <Left> <Nop>
 nnoremap <Right> <Nop>
 nnoremap <Up> <Nop>
+nnoremap <PageUp> <Nop>
+nnoremap <PageDown> <Nop>
+nnoremap <Insert> <Nop>
 nnoremap <leader>w gqip
 nnoremap <silent> <leader><space> :noh<CR>
 nnoremap <silent> <space>a :<C-u>CocList diagnostics<CR>
@@ -193,7 +196,9 @@ vmap <leader>f <Plug>(coc-format-selected)
 " NERDTree {{{
 let NERDTreeIgnore=['\.pyc$', '\~$', '\.git$', '\.tox$', '\.cache$', '\.sw[a-z]$', 'node_modules', 'gmon.out', '.mypy_cache', '.pytest_cache', 'tags']
 let NERDTreeShowHidden=1
-autocmd VimEnter * NERDTreeToggle
+let NERDTreeUseTCD=1
+let NERDTreeShowLineNumbers=1
+let NERDTreeAutoDeleteBuffer=1
 " }}}
 
 "ALE {{{
@@ -302,11 +307,11 @@ if !exists("autocommands_loaded")
         au FileType go nmap <Leader>I :GoImportAs!
     augroup END
 
-
     augroup Markdown
         autocmd!
         au FileType markdown unmap <leader>T
         au FileType markdown nmap <leader>T :Toc<CR>
+        au FileType markdown setlocal spell spelllang=en_us
     augroup END
 
     augroup Quickfix
@@ -315,6 +320,16 @@ if !exists("autocommands_loaded")
         au FileType qf resize 5
     augroup END
 
+    augroup Nerdtree
+        autocmd!
+        au VimEnter * NERDTreeToggle
+    augroup END
+
+    augroup Help
+        autocmd!
+        au FileType help set nu
+        au FileType help set rnu
+    augroup END
     au TabLeave * let g:lasttab = tabpagenr()
     au InsertLeave,CompleteDone * if pumvisible() == 0 || pclose || endif
 endif
