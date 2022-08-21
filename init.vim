@@ -194,7 +194,7 @@ vmap <leader>f <Plug>(coc-format-selected)
 "}}}
 
 " NERDTree {{{
-let NERDTreeIgnore=['\.pyc$', '\~$', '\.git$', '\.tox$', '\.cache$', '\.sw[a-z]$', 'node_modules', 'gmon.out', '.mypy_cache', '.pytest_cache', 'tags']
+let NERDTreeIgnore=['\.pyc$', '\~$', '\.git$', '\.tox$', '\.cache$', '\.sw[a-z]$', 'node_modules', 'gmon.out', '.mypy_cache', '.pytest_cache', 'tags', '__pycache__']
 let NERDTreeShowHidden=1
 let NERDTreeUseTCD=1
 let NERDTreeShowLineNumbers=1
