@@ -5,3 +5,5 @@
 --type-add=csbuild:*.{csproj,sln}
 
 --max-columns=150
+
+--glob=!tags

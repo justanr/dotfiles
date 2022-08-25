@@ -81,6 +81,8 @@ Plug 'Yggdroot/indentLine'
 Plug 'yssl/QFEnter'
 Plug 'vim-python/python-syntax'
 Plug 'arzg/vim-sh'
+Plug 'airblade/vim-gitgutter'
+Plug 'kana/vim-submode'
 call plug#end()
 " }}}
 
@@ -106,6 +108,16 @@ function! s:check_back_space() abort
     let col = col('.') - 1
     return !col || getline('.')[col - 1] =~# '\s'
 endfunction
+
+function! ProjectTab(projectDir) abort 
+    let pd=a:projectDir
+    tabnew
+    tcd pd
+    NERDTreeToggle
+endfunction
+" }}}
+" Commands {{{
+command! -nargs=1 -complete=file ProjectTab call ProjectTab(<f-args>)
 " }}}
 
 " Keymaps {{{
@@ -115,8 +127,8 @@ imap <Right> <Nop>
 imap <Up> <Nop>
 imap <Down> <Nop>
 inoremap <C-h> <Left>
-inoremap <C-j> <C-o>gj
-inoremap <C-k> <C-o>gk
+imap <C-j> <C-o>gj
+imap <C-k> <C-o>gk
 inoremap <C-l> <Right>
 inoremap <F5> <C-R>=strftime("%Y-%m-%d %H:%M:%S")<CR>
 inoremap <silent><expr> <C-e> coc#pum#visible() ? coc#pum#cancel() : "\<C-e>"
@@ -142,8 +154,8 @@ nmap <silent> <leader>gd :call CocAction('jumpDefinition', 'edit')<CR>
 nmap <silent> <leader>gi :call CocAction('jumpImplementation', 'edit')<CR>
 nmap <silent> <leader>gr :call CocAction('jumpReferences', 'edit')<CR>
 nmap <silent> <leader>gy :call CocAction('jumpTypeDefinition', 'edit')<CR>
-nmap <silent> [c <Plug>(coc-diagnostic-prev>
-nmap <silent> ]c <Plug>(coc-diagnostic-next>
+nmap <silent> [n <Plug>(coc-diagnostic-prev>
+nmap <silent> ]n <Plug>(coc-diagnostic-next>
 nmap <silent> gd :call CocAction('jumpDefinition', 'vsplit')<CR>
 nmap <silent> gi :call CocAction('jumpImplementation', 'vsplit')<CR>
 nmap <silent> gr :call CocAction('jumpReferences', 'vsplit')<CR>
@@ -166,6 +178,7 @@ nnoremap <silent> <leader><space> :noh<CR>
 nnoremap <silent> <space>a :<C-u>CocList diagnostics<CR>
 nnoremap <silent> <space>c :<C-u>CocList commands<CR>
 nnoremap <silent> <space>e :<C-u>CocList extensions<CR>
+nnoremap <silent> <space>f <Plug>(coc-fix-current)
 nnoremap <silent> <space>j :<C-u>CocNext<CR>
 nnoremap <silent> <space>k :<C-u>CocPrev<CR>
 nnoremap <silent> <space>o :<C-u>CocList outline<CR>
@@ -210,7 +223,8 @@ let g:ale_linters = {
                         \'typescript': ['tslint', 'tsserver', 'typecheck'],
                         \'python': ['flake8', 'mypy'],
                         \'rust': ['rustc', 'rls'],
-                        \'go': ['gofmt', 'staticcheck', 'golint', 'gobuild']
+                        \'go': ['gofmt', 'staticcheck', 'golint', 'gobuild'],
+                        \'yaml': ['yamllint']
                         \}
 let g:ale_sign_column_always = 1
 "}}}
@@ -279,7 +293,6 @@ if !exists("autocommands_loaded")
     let autocommands_loaded = 1
     augroup Fugitive
         au FileType fugitive wincmd J
-        au FileType fugitive resize 10
     augroup END
 
     augroup FiletypeGroup
@@ -317,7 +330,6 @@ if !exists("autocommands_loaded")
     augroup Quickfix
         autocmd!
         au FileType qf wincmd J
-        au FileType qf resize 5
     augroup END
 
     augroup Nerdtree
@@ -359,4 +371,43 @@ let g:indentLine_setConceal = 0
 
 "Docs {{{
 let g:echodoc#enable_at_startup = 1
+"}}}
+
+"Gitgutter {{{
+let g:gitgutter_map_keys = 0
+let g:gitgutter_use_location_list = 1
+nnoremap ]h <Plug>(GitGutterNextHunk)
+nnoremap [h <Plug>(GitGutterPrevHunk)
+nnoremap <Leader>ghs <Plug>(GitGutterStageHunk)
+nnoremap <Leader>ghu <Plug>(GitGutterUndoHunk)
+nnoremap <Leader>ghp <Plug>(GitGutterPreviewHunk)
+"}}}
+
+"Submode {{{
+let g:submode_always_show_submode = 1
+"Window Submode {{{
+" We're taking over the default <C-w> setting. Don't worry we'll do
+" our best to put back the default functionality.
+call submode#enter_with('window', 'n', '', '<C-w>')
+
+" Note: <C-c> will also get you out to the mode without this mapping.
+" Note: <C-[> also behaves as <ESC>
+call submode#leave_with('window', 'n', '', '<ESC>')
+
+" Go through every letter
+for key in ['a','b','c','d','e','f','g','h','i','j','k','l','m',
+\           'n','o','p','q','r','s','t','u','v','w','x','y','z']
+  " maps lowercase, uppercase and <C-key>
+  call submode#map('window', 'n', '', key, '<C-w>' . key)
+  call submode#map('window', 'n', '', toupper(key), '<C-w>' . toupper(key))
+  call submode#map('window', 'n', '', '<C-' . key . '>', '<C-w>' . '<C-'.key . '>')
+endfor
+" Go through symbols. Sadly, '|', not supported in submode plugin.
+for key in ['=','_','+','-','<','>']
+  call submode#map('window', 'n', '', key, '<C-w>' . key)
+endfor
+
+" Old way, just in case.
+nnoremap <Leader>w <C-w>
+"}}}
 "}}}
