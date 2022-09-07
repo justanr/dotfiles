@@ -109,7 +109,7 @@ function! s:check_back_space() abort
     return !col || getline('.')[col - 1] =~# '\s'
 endfunction
 
-function! ProjectTab(projectDir) abort 
+function! ProjectTab(projectDir) abort
     let pd=a:projectDir
     tabnew
     tcd pd
@@ -140,7 +140,11 @@ inoremap <silent><expr> <cr> coc#pum#visible() ? coc#_select_confirm() : "\<CR>"
 inoremap <silent><expr> <TAB> coc#pum#visible() ? coc#_select_confirm() : "\<TAB>"
 "}}}
 " Normal {{{
-nnoremap <leader>q :call ToggleQuickFix()<CR><C-W>p
+nnoremap <leader>qf :call ToggleQuickFix()<CR><C-W>p
+nnoremap [q :cn<CR>
+nnoremap ]q :cp<CR>
+nnoremap [Q :clast<CR>
+nnoremap ]Q :crewind<CR>
 nmap <leader>T :TagbarToggle<CR>
 nmap <Leader>di <Plug>VimspectorBalloonEval
 nmap <leader>dd :call vimspector#Launch()<CR>
