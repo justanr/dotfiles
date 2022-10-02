@@ -66,7 +66,7 @@ Plug 'ekalinin/Dockerfile.vim'
 Plug 'fatih/vim-go'
 Plug 'flazz/vim-colorschemes'
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'mhartington/nvim-typescript'
+Plug 'mhartington/nvim-typescript', {'do': 'sh install.sh'}
 Plug 'mhinz/vim-grepper'
 Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': 'yarn install --frozen-lockfile'}
 Plug 'preservim/tagbar'
@@ -83,6 +83,7 @@ Plug 'vim-python/python-syntax'
 Plug 'arzg/vim-sh'
 Plug 'airblade/vim-gitgutter'
 Plug 'kana/vim-submode'
+Plug 'tpope/vim-surround'
 call plug#end()
 " }}}
 
@@ -110,11 +111,11 @@ function! s:check_back_space() abort
 endfunction
 
 function! ProjectTab(projectDir) abort
-    let pd=a:projectDir
     tabnew
-    tcd pd
+    execute 'tcd' a:projectDir
     NERDTreeToggle
 endfunction
+
 " }}}
 " Commands {{{
 command! -nargs=1 -complete=file ProjectTab call ProjectTab(<f-args>)
@@ -177,7 +178,7 @@ nnoremap <Up> <Nop>
 nnoremap <PageUp> <Nop>
 nnoremap <PageDown> <Nop>
 nnoremap <Insert> <Nop>
-nnoremap <leader>w gqip
+nnoremap <leader>gq gqip
 nnoremap <silent> <leader><space> :noh<CR>
 nnoremap <silent> <space>a :<C-u>CocList diagnostics<CR>
 nnoremap <silent> <space>c :<C-u>CocList commands<CR>
@@ -207,6 +208,10 @@ vmap <leader>f <Plug>(coc-format-selected)
     \ pumvisible() ? "\<C-n>" :
     \ <SID>check_back_space() ? "\<TAB>" :
     \ coc#refresh()
+"}}}
+"Command {{{
+cnoremap <C-j> <Down>
+cnoremap <C-k> <Up>
 "}}}
 "}}}
 
@@ -281,8 +286,9 @@ let g:rustfmt_fail_silently = 0
 " CtrlP/Vimgrepper Ripgrep {{{
 let g:ctrlp_extensions = ['line', 'buffertag', 'tag', 'dir']
 let g:ctrlp_cmd = 'CtrlPLastMode'
+let g:ctrlp_show_hidden = 1
 if executable('rg')
-        let g:ctrlp_user_command = 'rg %s --files --color=never --smart-case --glob ""'
+        let g:ctrlp_user_command = 'rg %s --files --color=never --smart-case --glob "" --hidden'
         let g:ctrlp_use_caching = 0
         nnoremap \ :GrepperRg<SPACE>
         nnoremap K :Grepper -tool rg -cword<CR><CR>
