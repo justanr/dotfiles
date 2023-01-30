@@ -1,0 +1,43 @@
+{
+  "yaml.schemas": {
+    "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/github-workflow.json": ".github/workflows/*.yml",
+    "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/github-action.json": [
+        ".github/actions/**/action.yml",
+        "github_actions/**/action.yml",
+    ]
+  },
+  "go.goplsUseDaemon": false,
+  "go.goplsOptions": {
+    "completeUnimported": true
+  },
+  "suggest.autotrigger": "always",
+  "suggest.echodocSupport": true,
+  "languageserver": {
+    "csharp": {
+        "command": "csharp-ls",
+        "rootPatterns": [
+            "*.sln",
+            "git"
+        ],
+        "filetypes": ["cs", "csharp"]
+    },
+    "bash": {
+        "command": "bash-language-server",
+        "args": ["start"],
+        "filetypes": ["sh"],
+        "ignoredRootPaths": ["~"]
+    },
+    "golang": {
+      "command": "gopls",
+      "rootPatterns": [
+        "go.mod",
+        ".vim/",
+        ".git/",
+        ".hg/"
+      ],
+      "filetypes": [
+        "go"
+      ]
+    }
+  }
+}

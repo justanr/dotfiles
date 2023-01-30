@@ -48,6 +48,8 @@ set termguicolors
 set updatetime=300
 set wildmenu
 set wildmode=longest,list
+set mouse=
+set ffs=unix
 syntax on
 filetype plugin on
 "}}}
@@ -84,6 +86,12 @@ Plug 'arzg/vim-sh'
 Plug 'airblade/vim-gitgutter'
 Plug 'kana/vim-submode'
 Plug 'tpope/vim-surround'
+Plug 'mustache/vim-mustache-handlebars'
+Plug 'hashivim/vim-terraform'
+Plug 'tpope/vim-abolish'
+Plug 'wesQ3/vim-windowswap'
+Plug 'inkarkat/vim-SyntaxRange'
+Plug 'inkarkat/vim-ingo-library'
 call plug#end()
 " }}}
 
@@ -127,6 +135,12 @@ imap <Left> <Nop>
 imap <Right> <Nop>
 imap <Up> <Nop>
 imap <Down> <Nop>
+inoremap <PageUp> <Nop>
+inoremap <PageDown> <Nop>
+inoremap <Insert> <Nop>
+inoremap <Home> <Nop>
+inoremap <End> <Nop>
+inoremap <Del> <Nop>
 inoremap <C-h> <Left>
 imap <C-j> <C-o>gj
 imap <C-k> <C-o>gk
@@ -178,6 +192,9 @@ nnoremap <Up> <Nop>
 nnoremap <PageUp> <Nop>
 nnoremap <PageDown> <Nop>
 nnoremap <Insert> <Nop>
+nnoremap <Home> <Nop>
+nnoremap <End> <Nop>
+nnoremap <Del> <Nop>
 nnoremap <leader>gq gqip
 nnoremap <silent> <leader><space> :noh<CR>
 nnoremap <silent> <space>a :<C-u>CocList diagnostics<CR>
@@ -199,7 +216,8 @@ nnoremap gk k
 nnoremap j gj
 nnoremap k gk
 nnoremap ntt :NERDTreeToggle<CR>
-noremap <leader>y :Neoformat<CR>
+nnoremap <leader>y :Neoformat<CR>
+nnoremap <leader>J J
 "}}}
 "Visual {{{
 vnoremap <leader>y :Neoformat 'full'<CR>
@@ -212,6 +230,17 @@ vmap <leader>f <Plug>(coc-format-selected)
 "Command {{{
 cnoremap <C-j> <Down>
 cnoremap <C-k> <Up>
+cnoremap <C-h> <Left>
+cnoremap <C-l> <Right>
+cnoremap <Down> <Nop>
+cnoremap <Left> <Nop>
+cnoremap <Right> <Nop>
+cnoremap <Up> <Nop>
+cnoremap <PageUp> <Nop>
+cnoremap <PageDown> <Nop>
+cnoremap <Insert> <Nop>
+cnoremap <Home> <Nop>
+cnoremap <End> <Nop>
 "}}}
 "}}}
 
@@ -288,13 +317,11 @@ let g:ctrlp_extensions = ['line', 'buffertag', 'tag', 'dir']
 let g:ctrlp_cmd = 'CtrlPLastMode'
 let g:ctrlp_show_hidden = 1
 if executable('rg')
-        let g:ctrlp_user_command = 'rg %s --files --color=never --smart-case --glob "" --hidden'
+        let g:ctrlp_user_command = 'rg %s --files --color=never --smart-case --glob "" --hidden -g''!.git/*'' -g''!.worktree/*'' '
         let g:ctrlp_use_caching = 0
         nnoremap \ :GrepperRg<SPACE>
-        nnoremap K :Grepper -tool rg -cword<CR><CR>
 else
     nnoremap \ :Grepper -tool grep<SPACE>
-    nnoremap K :Grepper -cword -tool grep<CR><CR>
 endif
 "}}}
 
@@ -305,7 +332,12 @@ if !exists("autocommands_loaded")
         au FileType fugitive wincmd J
     augroup END
 
-    augroup FiletypeGroup
+    augroup Dockerfile
+        autocmd!
+        au BufRead,BufNewFile Dockerfile* set filetype=Dockerfile
+    augroup END
+
+    augroup Typescript
         autocmd!
         au BufRead,BufNewFile *.jsx set filetype=javascript.jsx
         au BufRead,BufNewFile *.tsx set filetype=typescript.tsx
@@ -332,8 +364,7 @@ if !exists("autocommands_loaded")
 
     augroup Markdown
         autocmd!
-        au FileType markdown unmap <leader>T
-        au FileType markdown nmap <leader>T :Toc<CR>
+        au FileType markdown nmap <leader>toc :Toc<CR>
         au FileType markdown setlocal spell spelllang=en_us
     augroup END
 
@@ -354,6 +385,15 @@ if !exists("autocommands_loaded")
     augroup END
     au TabLeave * let g:lasttab = tabpagenr()
     au InsertLeave,CompleteDone * if pumvisible() == 0 || pclose || endif
+
+    augroup InlineSyntax
+        autocmd!
+        autocmd Syntax * call SyntaxRange#Include('@begin=sh@', '@end=sh@', 'sh', 'NonText')
+        autocmd Syntax * call SyntaxRange#Include('@begin=bash@', '@end=bash@', 'bash', 'NonText')
+        autocmd Syntax * call SyntaxRange#Include('@begin=js@', '@end=js@', 'javascript', 'NonText')
+        autocmd Syntax * call SyntaxRange#Include('@begin=sql@', '@end=sql@','sql', 'NonText')
+        autocmd Syntax * call SyntaxRange#Include('@begin=py@', '@end=py@', 'python', 'NonText')
+    augroup END
 endif
 "}}}
 
@@ -421,3 +461,4 @@ endfor
 nnoremap <Leader>w <C-w>
 "}}}
 "}}}
+
