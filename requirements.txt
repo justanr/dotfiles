@@ -17,3 +17,4 @@ pyflakes==2.4.0
 pynvim==0.4.3
 tomli==2.0.1
 typing_extensions==4.3.0
+pyaml==21.10.1

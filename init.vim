@@ -124,9 +124,17 @@ function! ProjectTab(projectDir) abort
     NERDTreeToggle
 endfunction
 
+function! ActionLint() abort
+    if executable('actionlint')
+        cgete system('actionlint -oneline')
+        copen
+    endif
+endfunction
+
 " }}}
 " Commands {{{
 command! -nargs=1 -complete=file ProjectTab call ProjectTab(<f-args>)
+command! ActionLint call ActionLint()
 " }}}
 
 " Keymaps {{{
@@ -167,7 +175,7 @@ nmap <leader>de :VimspectorEval
 nmap <leader>do :VimspectorShowOutput
 nmap <leader>dw :VimspectorWatch
 nmap <leader>dx :VimspectorReset<CR>
-nmap <leader>f <Plug>(coc-format-selected)
+nmap <leader>f <Plug>(coc-format)
 nmap <leader>rn <Plug>(coc-rename)
 nmap <silent> <leader>gd :call CocAction('jumpDefinition', 'edit')<CR>
 nmap <silent> <leader>gi :call CocAction('jumpImplementation', 'edit')<CR>
@@ -252,21 +260,6 @@ let NERDTreeShowLineNumbers=1
 let NERDTreeAutoDeleteBuffer=1
 " }}}
 
-"ALE {{{
-let g:ale_echo_msg_error_str = 'E'
-let g:ale_echo_msg_format = '[%severity%] [%linter%] %s'
-let g:ale_echo_msg_warning_str = 'W'
-let g:ale_history_log_output = 1
-let g:ale_linters = {
-                        \'typescript': ['tslint', 'tsserver', 'typecheck'],
-                        \'python': ['flake8', 'mypy'],
-                        \'rust': ['rustc', 'rls'],
-                        \'go': ['gofmt', 'staticcheck', 'golint', 'gobuild'],
-                        \'yaml': ['yamllint']
-                        \}
-let g:ale_sign_column_always = 1
-"}}}
-
 "neoformat {{{
 let g:neoformat_python_isort = {
                         \ 'exe': py3path . 'isort',
@@ -298,13 +291,23 @@ let g:neoformat_typescript_prettier = {
                         \       '--parser', 'typescript'
                         \]
                         \ }
+let g:neoformat_yaml_pyaml = {
+            \ 'exe': py3interp,
+            \ 'args': ['-m', 'pyaml'],
+            \ 'stdin': 1,
+            \}
+let g:neoformat_yaml_yamlfmt = {
+            \'exe': 'yamlfmt',
+            \'args': ['-'],
+            \'stdin':1,
+            \}
 let g:neoformat_enabled_python = ['isort', 'black']
-
 let g:neoformat_enabled_javascript = ['prettier']
 let g:neoformat_enabled_typescript = ['prettier']
 let g:neoformat_enabled_rust = ['rustfmt']
 let g:neoformat_enabled_html = ['htmlbeautify']
 let g:neoformat_enabled_go = ['gofmt']
+let g:neoformat_enabled_yaml = ['yamlfmt']
 let g:neoformat_run_all_formatters = 1
 let g:neoformat_verbose = 0
 let g:rustfmt_autosave = 1
@@ -383,6 +386,7 @@ if !exists("autocommands_loaded")
         au FileType help set nu
         au FileType help set rnu
     augroup END
+
     au TabLeave * let g:lasttab = tabpagenr()
     au InsertLeave,CompleteDone * if pumvisible() == 0 || pclose || endif
 
