@@ -68,7 +68,6 @@ Plug 'ekalinin/Dockerfile.vim'
 Plug 'fatih/vim-go'
 Plug 'flazz/vim-colorschemes'
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'mhartington/nvim-typescript', {'do': 'sh install.sh'}
 Plug 'mhinz/vim-grepper'
 Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': 'yarn install --frozen-lockfile'}
 Plug 'preservim/tagbar'
@@ -80,7 +79,6 @@ Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'Shougo/echodoc'
 Plug 'tpope/vim-fugitive'
 Plug 'Yggdroot/indentLine'
-Plug 'yssl/QFEnter'
 Plug 'vim-python/python-syntax'
 Plug 'arzg/vim-sh'
 Plug 'airblade/vim-gitgutter'
@@ -92,6 +90,8 @@ Plug 'tpope/vim-abolish'
 Plug 'wesQ3/vim-windowswap'
 Plug 'inkarkat/vim-SyntaxRange'
 Plug 'inkarkat/vim-ingo-library'
+Plug 'romainl/vim-qf'
+Plug 'towolf/vim-helm'
 call plug#end()
 " }}}
 
@@ -131,10 +131,21 @@ function! ActionLint() abort
     endif
 endfunction
 
+function! Scratch()
+    split
+    noswapfile hide enew
+    setlocal buftype=nofile
+    setlocal bufhidden=hide
+    "setlocal nobuflisted
+    "lcd ~
+    file scratch
+endfunction
 " }}}
+
 " Commands {{{
 command! -nargs=1 -complete=file ProjectTab call ProjectTab(<f-args>)
 command! ActionLint call ActionLint()
+command! Scratch call Scratch()
 " }}}
 
 " Keymaps {{{
@@ -163,11 +174,10 @@ inoremap <silent><expr> <cr> coc#pum#visible() ? coc#_select_confirm() : "\<CR>"
 inoremap <silent><expr> <TAB> coc#pum#visible() ? coc#_select_confirm() : "\<TAB>"
 "}}}
 " Normal {{{
-nnoremap <leader>qf :call ToggleQuickFix()<CR><C-W>p
-nnoremap [q :cn<CR>
-nnoremap ]q :cp<CR>
-nnoremap [Q :clast<CR>
-nnoremap ]Q :crewind<CR>
+nnoremap <leader>qf <Plug>(qf_qf_toggle)
+nnoremap qf <Plug>(qf_qf_switch)
+nnoremap [q <Plug>(qf_qf_next)
+nnoremap ]q <Plug>(qf_qf_previous)
 nmap <leader>T :TagbarToggle<CR>
 nmap <Leader>di <Plug>VimspectorBalloonEval
 nmap <leader>dd :call vimspector#Launch()<CR>
@@ -320,7 +330,7 @@ let g:ctrlp_extensions = ['line', 'buffertag', 'tag', 'dir']
 let g:ctrlp_cmd = 'CtrlPLastMode'
 let g:ctrlp_show_hidden = 1
 if executable('rg')
-        let g:ctrlp_user_command = 'rg %s --files --color=never --smart-case --glob "" --hidden -g''!.git/*'' -g''!.worktree/*'' '
+        let g:ctrlp_user_command = 'rg %s --files --color=never --smart-case --glob "" --hidden -g''!.git/*'' -g''!.worktrees/*'' -g''!.worktree/*'' '
         let g:ctrlp_use_caching = 0
         nnoremap \ :GrepperRg<SPACE>
 else
@@ -329,76 +339,74 @@ endif
 "}}}
 
 " Autocommands {{{
-if !exists("autocommands_loaded")
-    let autocommands_loaded = 1
-    augroup Fugitive
-        au FileType fugitive wincmd J
-    augroup END
+augroup Fugitive
+    au FileType fugitive wincmd J
+augroup END
 
-    augroup Dockerfile
-        autocmd!
-        au BufRead,BufNewFile Dockerfile* set filetype=Dockerfile
-    augroup END
+augroup Dockerfile
+    autocmd!
+    au BufRead,BufNewFile Dockerfile* set filetype=Dockerfile
+augroup END
 
-    augroup Typescript
-        autocmd!
-        au BufRead,BufNewFile *.jsx set filetype=javascript.jsx
-        au BufRead,BufNewFile *.tsx set filetype=typescript.tsx
-    augroup END
+augroup Typescript
+    autocmd!
+    au BufRead,BufNewFile *.jsx set filetype=javascript.jsx
+    au BufRead,BufNewFile *.tsx set filetype=typescript.tsx
+augroup END
 
-    augroup numbertoggle
-        autocmd!
-        autocmd BufEnter,FocusGained,InsertLeave,WinEnter * if &nu && mode() != "i" | set rnu   | endif
-        autocmd BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu                  | set nornu | endif
-    augroup END
+augroup numbertoggle
+    autocmd!
+    autocmd BufEnter,FocusGained,InsertLeave,WinEnter * if &nu && mode() != "i" | set rnu   | endif
+    autocmd BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu                  | set nornu | endif
+augroup END
 
-    augroup Go
-        autocmd!
-        au FileType go nmap <leader>r <Plug>(go-run)
-        au FileType go nmap <leader>b <Plug>(go-build)
-        au FileType go nmap <leader>t :GoTest!<CR>
-        au FileType go nmap <leader>c <Plug>(go-coverage-toggle)
-        au FileType go nmap <leader>e <Plug>(go-rename)
-        au FileType go iab iferr if err != nil {}<Up>
-        au FileType go nmap <Leader>a <Plug>(go-alternate-vertical)
-        au FileType go nmap <Leader>i :GoImport!
-        au FileType go nmap <Leader>I :GoImportAs!
-    augroup END
+augroup Go
+    autocmd!
+    au FileType go nmap <leader>r <Plug>(go-run)
+    au FileType go nmap <leader>b <Plug>(go-build)
+    au FileType go nmap <leader>t :GoTest!<CR>
+    au FileType go nmap <leader>c <Plug>(go-coverage-toggle)
+    au FileType go nmap <leader>e <Plug>(go-rename)
+    au FileType go iab iferr if err != nil {}<Up>
+    au FileType go nmap <Leader>a <Plug>(go-alternate-vertical)
+    au FileType go nmap <Leader>i :GoImport!
+    au FileType go nmap <Leader>I :GoImportAs!
+augroup END
 
-    augroup Markdown
-        autocmd!
-        au FileType markdown nmap <leader>toc :Toc<CR>
-        au FileType markdown setlocal spell spelllang=en_us
-    augroup END
+augroup Markdown
+    autocmd!
+    au FileType markdown nmap <leader>toc :Toc<CR>
+    au FileType markdown setlocal spell spelllang=en_us
+augroup END
 
-    augroup Quickfix
-        autocmd!
-        au FileType qf wincmd J
-    augroup END
+augroup Quickfix
+    autocmd!
+    au FileType qf map <buffer> <leader>d :.Reject<CR>
+augroup END
 
-    augroup Nerdtree
-        autocmd!
-        au VimEnter * NERDTreeToggle
-    augroup END
+augroup Nerdtree
+    autocmd!
+    au VimEnter * NERDTreeToggle
+augroup END
 
-    augroup Help
-        autocmd!
-        au FileType help set nu
-        au FileType help set rnu
-    augroup END
+augroup Help
+    autocmd!
+    au FileType help set nu
+    au FileType help set rnu
+augroup END
 
-    au TabLeave * let g:lasttab = tabpagenr()
-    au InsertLeave,CompleteDone * if pumvisible() == 0 || pclose || endif
+au TabLeave * let g:lasttab = tabpagenr()
+au InsertLeave,CompleteDone * if pumvisible() == 0 || pclose || endif
 
-    augroup InlineSyntax
-        autocmd!
-        autocmd Syntax * call SyntaxRange#Include('@begin=sh@', '@end=sh@', 'sh', 'NonText')
-        autocmd Syntax * call SyntaxRange#Include('@begin=bash@', '@end=bash@', 'bash', 'NonText')
-        autocmd Syntax * call SyntaxRange#Include('@begin=js@', '@end=js@', 'javascript', 'NonText')
-        autocmd Syntax * call SyntaxRange#Include('@begin=sql@', '@end=sql@','sql', 'NonText')
-        autocmd Syntax * call SyntaxRange#Include('@begin=py@', '@end=py@', 'python', 'NonText')
-    augroup END
-endif
+augroup InlineSyntax
+    autocmd!
+    autocmd Syntax * call SyntaxRange#Include('@begin=sh@', '@end=sh@', 'sh', 'NonText')
+    autocmd Syntax * call SyntaxRange#Include('@begin=bash@', '@end=bash@', 'bash', 'NonText')
+    autocmd Syntax * call SyntaxRange#Include('@begin=js@', '@end=js@', 'javascript', 'NonText')
+    autocmd Syntax * call SyntaxRange#Include('@begin=sql@', '@end=sql@','sql', 'NonText')
+    autocmd Syntax * call SyntaxRange#Include('@begin=py@', '@end=py@', 'python', 'NonText')
+    autocmd Syntax * call SyntaxRange#Include('@begin=go@', '@end=go@', 'go', 'NonText')
+augroup END
 "}}}
 
 
@@ -407,17 +415,10 @@ let g:vimspector_base_dir=expand('$HOME/.config/nvim/vimspector')
 let g:vimspector_enable_mappings='HUMAN'
 let g:vimspector_install_gadgets=['debugpy', 'CodeLLDB', 'vscode-cpptools', 'vscode-go']
 """
-
 "Vim Go {{{
 let g:go_def_mapping_enabled = 0
 "}}}
 
-"Quickfix {{{
-let g:qfenter_keymap = {}
-let g:qfenter_keymap.vopen = ['<C-v>']
-let g:qfenter_keymap.hopen = ['<C-s>', '<C-x>']
-let g:qfenter_keymap.topen = ['<C-t>']
-"}}}
 "Indents {{{
 let g:indentLine_char_list = ['|', '¦', '┆', '┊']
 let g:indentLine_setConceal = 0

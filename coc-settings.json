@@ -13,14 +13,6 @@
   "suggest.autotrigger": "always",
   "suggest.echodocSupport": true,
   "languageserver": {
-    "csharp": {
-        "command": "csharp-ls",
-        "rootPatterns": [
-            "*.sln",
-            "git"
-        ],
-        "filetypes": ["cs", "csharp"]
-    },
     "bash": {
         "command": "bash-language-server",
         "args": ["start"],
