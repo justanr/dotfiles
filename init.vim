@@ -62,12 +62,10 @@ tnoremap <Esc> <C-\><C-n>
 call plug#begin('~/.local/share/nvim/plugged')
 Plug 'cespare/vim-toml'
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'dense-analysis/ale'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'ekalinin/Dockerfile.vim'
 Plug 'fatih/vim-go'
 Plug 'flazz/vim-colorschemes'
-Plug 'ludovicchabant/vim-gutentags'
 Plug 'mhinz/vim-grepper'
 Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': 'yarn install --frozen-lockfile'}
 Plug 'preservim/tagbar'
@@ -92,6 +90,7 @@ Plug 'inkarkat/vim-SyntaxRange'
 Plug 'inkarkat/vim-ingo-library'
 Plug 'romainl/vim-qf'
 Plug 'towolf/vim-helm'
+Plug 'derdennis/vim-markdownfootnotes'
 call plug#end()
 " }}}
 
@@ -185,8 +184,8 @@ nmap <leader>de :VimspectorEval
 nmap <leader>do :VimspectorShowOutput
 nmap <leader>dw :VimspectorWatch
 nmap <leader>dx :VimspectorReset<CR>
-nmap <leader>f <Plug>(coc-format)
-nmap <leader>rn <Plug>(coc-rename)
+nmap <leader>y <Plug>(coc-format)
+nmap <leader>n <Plug>(coc-rename)
 nmap <silent> <leader>gd :call CocAction('jumpDefinition', 'edit')<CR>
 nmap <silent> <leader>gi :call CocAction('jumpImplementation', 'edit')<CR>
 nmap <silent> <leader>gr :call CocAction('jumpReferences', 'edit')<CR>
@@ -224,6 +223,12 @@ nnoremap <silent> <space>k :<C-u>CocPrev<CR>
 nnoremap <silent> <space>o :<C-u>CocList outline<CR>
 nnoremap <silent> <space>p :<C-u>CocListResume<CR>
 nnoremap <silent> <space>s :<C-u>CocList -I symbols<CR>
+nnoremap <silent> <leader>a <Plug>(coc-codeaction-selected)
+nnoremap <silent> <leader>ac <Plug>(coc-codeaction-cursor)
+nnoremap <silent> <leader>as <Plug>(coc-codeaction-source)
+nnoremap <silent> <leader>se <Plug>(coc-codeaction-refactor)
+nnoremap <silent> <leader>s <Plug>(coc-codeaction-refactor-selected)
+nnoremap <silent> <leader>cl <Plug>(coc-codelens-action)
 nnoremap <silent> U :call <SID>show_documentations()<CR>
 nnoremap H ^
 nnoremap J }
@@ -234,13 +239,13 @@ nnoremap gk k
 nnoremap j gj
 nnoremap k gk
 nnoremap ntt :NERDTreeToggle<CR>
-nnoremap <leader>y :Neoformat<CR>
 nnoremap <leader>J J
 "}}}
 "Visual {{{
 vnoremap <leader>y :Neoformat 'full'<CR>
+xmap <silent> <leader>s <Plug>(coc-codeaction-refactor-selected)
 xmap <Leader>di <Plug>VimspectorBalloonEval
-vmap <leader>f <Plug>(coc-format-selected)
+vmap <leader>y <Plug>(coc-format-selected)
     \ pumvisible() ? "\<C-n>" :
     \ <SID>check_back_space() ? "\<TAB>" :
     \ coc#refresh()
@@ -330,7 +335,7 @@ let g:ctrlp_extensions = ['line', 'buffertag', 'tag', 'dir']
 let g:ctrlp_cmd = 'CtrlPLastMode'
 let g:ctrlp_show_hidden = 1
 if executable('rg')
-        let g:ctrlp_user_command = 'rg %s --files --color=never --smart-case --glob "" --hidden -g''!.git/*'' -g''!.worktrees/*'' -g''!.worktree/*'' '
+        let g:ctrlp_user_command = 'rg %s --files --color=never -S --hidden -g''!.git/*'' -g''!.worktrees/*'' -g''!.worktree/*'' -g''!tags'' '
         let g:ctrlp_use_caching = 0
         nnoremap \ :GrepperRg<SPACE>
 else
@@ -339,10 +344,6 @@ endif
 "}}}
 
 " Autocommands {{{
-augroup Fugitive
-    au FileType fugitive wincmd J
-augroup END
-
 augroup Dockerfile
     autocmd!
     au BufRead,BufNewFile Dockerfile* set filetype=Dockerfile
@@ -362,7 +363,6 @@ augroup END
 
 augroup Go
     autocmd!
-    au FileType go nmap <leader>r <Plug>(go-run)
     au FileType go nmap <leader>b <Plug>(go-build)
     au FileType go nmap <leader>t :GoTest!<CR>
     au FileType go nmap <leader>c <Plug>(go-coverage-toggle)
@@ -413,7 +413,7 @@ augroup END
 " Vimspector {{{
 let g:vimspector_base_dir=expand('$HOME/.config/nvim/vimspector')
 let g:vimspector_enable_mappings='HUMAN'
-let g:vimspector_install_gadgets=['debugpy', 'CodeLLDB', 'vscode-cpptools', 'vscode-go']
+let g:vimspector_install_gadgets=['debugpy', 'CodeLLDB', 'vscode-cpptools', 'delve']
 """
 "Vim Go {{{
 let g:go_def_mapping_enabled = 0
