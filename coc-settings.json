@@ -2,8 +2,8 @@
   "yaml.schemas": {
     "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/github-workflow.json": ".github/workflows/*.yml",
     "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/github-action.json": [
-        ".github/actions/**/action.yml",
-        "github_actions/**/action.yml",
+      ".github/actions/**/action.yml",
+      "github_actions/**/action.yml"
     ]
   },
   "go.goplsUseDaemon": false,
@@ -14,10 +14,16 @@
   "suggest.echodocSupport": true,
   "languageserver": {
     "bash": {
-        "command": "bash-language-server",
-        "args": ["start"],
-        "filetypes": ["sh"],
-        "ignoredRootPaths": ["~"]
+      "command": "bash-language-server",
+      "args": [
+        "start"
+      ],
+      "filetypes": [
+        "sh"
+      ],
+      "ignoredRootPaths": [
+        "~"
+      ]
     },
     "golang": {
       "command": "gopls",
@@ -30,6 +36,18 @@
       "filetypes": [
         "go"
       ]
+    },
+    "terraform": {
+      "command": "terraform-ls",
+      "args": [
+        "serve"
+      ],
+      "filetypes": [
+        "terraform",
+        "tf"
+      ],
+      "initializationOptions": {},
+      "settings": {}
     }
   }
 }
